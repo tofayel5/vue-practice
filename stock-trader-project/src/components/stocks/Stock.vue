@@ -9,14 +9,20 @@
       </div>
       <div class="panel-body">
         <div class="pull-left">
-          <input type="name" class="form-control" placeholder="Quantity" v-model="quantity" />
+          <input
+            type="number"
+            class="form-control"
+            placeholder="Quantity"
+            :class="{danger: insufficientFunds}"
+            v-model="quantity"
+          />
         </div>
         <div class="pull-right">
           <buttun
             class="btn btn-success"
             @click="buyStock"
-            :disabled="quantity <= 0 || isNaN(quantity)"
-          >Buy</buttun>
+            :disabled="insufficientFunds || quantity <= 0"
+          >{{insufficientFunds ? 'Not Enough' : 'Buy'}}</buttun>
         </div>
       </div>
     </div>
@@ -30,6 +36,14 @@ export default {
       quantity: 0
     };
   },
+  computed: {
+    funds() {
+      return this.$store.getters.funds;
+    },
+    insufficientFunds() {
+      return this.quantity * this.stock.price > this.funds;
+    }
+  },
   methods: {
     buyStock() {
       const order = {
@@ -38,8 +52,15 @@ export default {
         quantity: this.quantity
       };
       console.log(order);
+      this.$store.dispatch("buyStock", order);
       this.quantity = 0;
     }
   }
 };
 </script>
+
+<style scoped>
+.danger {
+  border: 1px solid red;
+}
+</style>
