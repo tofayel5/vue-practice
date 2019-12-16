@@ -19,9 +19,9 @@ export default {
     myName: {
       type: String
     },
-    resetFunction: Function,
+    resetFunction: Function, 
     userAge: Number
-  },
+  }, 
   methods: {
     switchName() {
       return this.myName
